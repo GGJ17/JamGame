@@ -8,17 +8,14 @@ public class protagController : MonoBehaviour {
 
 	float speed = 10f;
 	float yPos = 1.24f;
+	public GameObject camera;
+	public GameObject light;
 
 	//bool isBallPlaying = false;
 
 	// Use this for initialization
 	void Start () {
 		Debug.Log ("test");
-		// Get initial position of ball
-		//ball.transform.localPosition = new Vector3(0, 0, 1.75f);
-
-		// Parent to paddle
-		//ball.transform.parent = this.transform;
 	}
 
 	// Update is called once per frame
@@ -32,10 +29,10 @@ public class protagController : MonoBehaviour {
 			float newXPos = transform.position.x - (Time.deltaTime * speed);
 			Debug.Log("left");
 
-			// Check if Min
-
 			// Assign position
 			transform.position = new Vector3(newXPos, yPos, transform.position.z);
+			camera.transform.position = new Vector3(transform.position.x, camera.transform.position.y, transform.position.z);
+			light.transform.position = new Vector3(transform.position.x, camera.transform.position.y, transform.position.z);
 
 		}
 
@@ -43,11 +40,11 @@ public class protagController : MonoBehaviour {
 			// Get New Position
 			float newXPos = transform.position.x + (Time.deltaTime * speed);
 			Debug.Log("right");
-
-			// Check if Max
-
+			
 			// Assign position
 			transform.position = new Vector3(newXPos, yPos, transform.position.z);
+			camera.transform.position = new Vector3(transform.position.x, camera.transform.position.y, transform.position.z);
+			light.transform.position = new Vector3(transform.position.x, camera.transform.position.y, transform.position.z);
 
 		}
 
@@ -56,10 +53,10 @@ public class protagController : MonoBehaviour {
 			float newZPos = transform.position.z - (Time.deltaTime * speed);
 			Debug.Log("down");
 
-			// Check if Min
-
 			// Assign position
 			transform.position = new Vector3(transform.position.x, yPos, newZPos);
+			camera.transform.position = new Vector3(transform.position.x, camera.transform.position.y, transform.position.z);
+			light.transform.position = new Vector3(transform.position.x, camera.transform.position.y, transform.position.z);
 
 		}
 
@@ -68,10 +65,10 @@ public class protagController : MonoBehaviour {
 			float newZPos = transform.position.z + (Time.deltaTime * speed);
 			Debug.Log("up");
 
-			// Check if Max
-
 			// Assign position
 			transform.position = new Vector3(transform.position.x, yPos, newZPos);
+			camera.transform.position = new Vector3(transform.position.x, camera.transform.position.y, transform.position.z);
+			light.transform.position = new Vector3(transform.position.x, camera.transform.position.y, transform.position.z);
 
 		}
 			
