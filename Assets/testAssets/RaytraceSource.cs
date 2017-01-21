@@ -8,8 +8,8 @@ public class RaytraceSource : MonoBehaviour {
 
 	//the number of reflections  
 	//public int nReflections = 2;
-	public float rayDist = 100f;
-	public int rayRes = 8;
+	public float rayDist = 10f;
+	public int rayRes = 60;
 	// Use this for initialization
 	void Start () {
 		
@@ -23,16 +23,31 @@ public class RaytraceSource : MonoBehaviour {
 	protected void Awake () {
 		goTransform = this.GetComponent<Transform>();
 	}
-	protected void CalcRay(){
-		ArrayList al1, al2;
+	protected Dictionary<string,List<float[]>> CalcRay(){
 		rayRes =  Mathf.Clamp(rayRes,1,rayRes);
-
+		Dictionary<string,List<float[]>> d = new Dictionary<string,List<float[]>> ();
 		for (int i = 0; i < rayRes; i++) {
+			List<ArrayList> al1;
 			float yRot = (i * 360) / (rayRes);
 			Vector3 dir = Quaternion.Euler (0, yRot, 0) * goTransform.forward;
-			CalcRay(goTransform.position,dir,rainbowRoad(yRot),out al1,out al2);
+			CalcRay(goTransform.position,dir,rainbowRoad(yRot),out al1);
+			foreach(ArrayList a in al1){
+				object[] b = a.ToArray ();
+				string oname = (string) b [0];
+				float dist = (float) b [1];
+				List<float[]> pre;
+				if (d.TryGetValue (oname, out pre)) {
+					float[] tmp = {dist,yRot};
+					pre.Add (tmp);
+				} else {
+					pre = new List<float[]>();
+					float[] tmp = { dist, yRot };
+					pre.Add (tmp);
+					d[oname]=pre;
+				}
+			}
 		}
-
+		return d;
 	}
 	protected Color rainbowRoad(float cir360){
 		float c = cir360 % 360;
@@ -49,41 +64,45 @@ public class RaytraceSource : MonoBehaviour {
 		return new Color (r, g, b, a);
 	}
 	protected void CalcRayForward(){
-		ArrayList al1, al2;
-		CalcRay(goTransform.position,goTransform.forward,Color.magenta,out al1,out al2);
+		List<ArrayList> al1;
+		CalcRay(goTransform.position,goTransform.forward,Color.magenta,out al1);
 	}
-	protected void CalcRay(Vector3 pos, Vector3 direct,Color c,out ArrayList objList, out ArrayList distList){
+	protected void CalcRay(Vector3 pos, Vector3 direct,Color c,out List<ArrayList> objList){
 		Ray ray;
 		RaycastHit hit;
 		Vector3 inDirection;
 
-		objList =  new ArrayList ();
-		distList = new ArrayList ();
+		objList =  new List<ArrayList> ();
 		//clamp the number of reflections between 1 and int capacity  
 		rayDist = Mathf.Clamp(rayDist,0,rayDist);
 		ray = new Ray(pos,direct);  
 
 		string hitObjs = "";
-		float remainDist = rayDist;
+		float currDist = 0;
 		//represent the ray using a line that can only be viewed at the scene tab  
-		Debug.DrawRay(pos,ray.direction * rayDist, c);  
+		//Debug.DrawRay(pos,ray.direction * rayDist, c);  
 
-		while(remainDist>0){  
-			if (Physics.Raycast (ray.origin, ray.direction, out hit, remainDist)) {
+		while(currDist<rayDist){  
+			if (Physics.Raycast (ray.origin, ray.direction, out hit, rayDist-currDist)) {
 				inDirection = Vector3.Reflect (ray.direction, hit.normal);
-				ray = new Ray (hit.point, inDirection);  
+				Debug.DrawRay (ray.origin, ray.direction * hit.distance, c);  
+				ray = new Ray (hit.point, inDirection);
+				currDist += hit.distance;
 
 				//Debug.DrawRay (hit.point, hit.normal * 3, Color.blue);  
-				Debug.DrawRay (hit.point, inDirection * remainDist, c);  
+				//Debug.DrawRay (hit.point, inDirection * (rayDist-currDist), c);
 
-				Debug.Log ("Object name: " + hit.transform.name);
-				hitObjs += hit.transform.name + " " + hit.distance + ", ";
-				objList.Add (hit.transform.name);
-				objList.Add (hit.distance);
+				//Debug.Log ("Object name: " + hit.transform.name);
+				hitObjs += hit.transform.name + " " + currDist + ", ";
+				ArrayList tmp = new ArrayList (2);
+				tmp.Add (hit.transform.name);
+				tmp.Add (currDist);
+				objList.Add (tmp);
 			} else {
+				Debug.DrawRay (ray.origin, ray.direction * (rayDist-currDist), c);
 				break;
 			}
 		}
-		if(hitObjs!="")Debug.Log ("Hit: " + hitObjs);
+		//if(objList.Count>0)Debug.Log ("Hit: " + hitObjs);
 	}
 }
