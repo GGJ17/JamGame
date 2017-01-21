@@ -6,6 +6,7 @@ public class Pathfinding : MonoBehaviour {
 
 	public Transform seeker, target;
 	Grid grid;
+	public List<Node> path = new List<Node> ();
 
 	void Awake() {
 		grid = GetComponent<Grid> ();
@@ -13,6 +14,10 @@ public class Pathfinding : MonoBehaviour {
 
 	void Update() {
 		FindPath (seeker.position, target.position);
+	}
+
+	public List<Node> GetPath(){
+		return path;
 	}
 
 	void FindPath(Vector3 startPos, Vector3 targetPos) {
@@ -59,7 +64,7 @@ public class Pathfinding : MonoBehaviour {
 	}
 
 	void RetracePath(Node startNode, Node endNode) {
-		List<Node> path = new List<Node>();
+		path = new List<Node>();
 		Node currentNode = endNode;
 
 		while (currentNode != startNode) {
