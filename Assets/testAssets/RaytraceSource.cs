@@ -30,22 +30,19 @@ public class RaytraceSource : MonoBehaviour {
 		for (int i = 0; i < rayRes; i++) {
 			float yRot = (i * 360) / (rayRes);
 			Vector3 dir = Quaternion.Euler (0, yRot, 0) * goTransform.forward;
-			CalcRay(goTransform.position,dir,Color.magenta,out al1,out al2);
+			CalcRay(goTransform.position,dir,rainbowRoad(yRot),out al1,out al2);
 		}
 
 	}
 	protected Color rainbowRoad(float cir360){
 		float c = cir360 % 360;
-		float r=0, g=0, b=0, a=0;
+		float r=0, g=0, b=0, a=1;
 		if (c >= 0 && c < 120) {
-			if (c < 60) {
-				
-			}
-			r = (c%60)/60; g = (c);
+			r = (120 - c)/120; g = (c - 0)/120; b = 0;
 		} else if (c >= 120 && c < 240) {
-			r = 1;
+			r = 0; g = (240 - c) / 120; b = (c - 120) / 120;
 		} else if (c>= 240 && c < 360) {
-			r = 0; 
+			r = (c - 240) / 120; g = 0; b = (360 - c) / 120;
 		} else {
 			r = 0; g = 0; b = 0; a = 1;
 		}
@@ -77,9 +74,9 @@ public class RaytraceSource : MonoBehaviour {
 				ray = new Ray (hit.point, inDirection);  
 
 				//Debug.DrawRay (hit.point, hit.normal * 3, Color.blue);  
-				Debug.DrawRay (hit.point, inDirection * remainDist, Color.magenta);  
+				Debug.DrawRay (hit.point, inDirection * remainDist, c);  
 
-				//Debug.Log ("Object name: " + hit.transform.name);
+				Debug.Log ("Object name: " + hit.transform.name);
 				hitObjs += hit.transform.name + " " + hit.distance + ", ";
 				objList.Add (hit.transform.name);
 				objList.Add (hit.distance);
@@ -87,6 +84,6 @@ public class RaytraceSource : MonoBehaviour {
 				break;
 			}
 		}
-		Debug.Log ("Hit: " + hitObjs);
+		if(hitObjs!="")Debug.Log ("Hit: " + hitObjs);
 	}
 }
