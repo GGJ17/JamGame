@@ -16,6 +16,7 @@ public class enemyController : MonoBehaviour {
 	private float speed = 2f;
 	private Vector3 speedRot = Vector3.right * 50f;
 	private Vector3 target;
+	private float relapse;
 
 	// Use this for initialization
 	void Start () {
@@ -36,6 +37,21 @@ public class enemyController : MonoBehaviour {
 			transform.position = Vector3.MoveTowards (transform.position, target, speed * Time.deltaTime);
 		} else {
 			// chase player
+			transform.Rotate (speedRot * Time.deltaTime);
+			transform.position = Vector3.MoveTowards (transform.position, target, speed * Time.deltaTime);
+		}
+		if (Mathf.Abs (protag.transform.position.x - transform.position.x) < 2f && Mathf.Abs (protag.transform.position.z - transform.position.z) < 2f) {
+			idle = false;
+			tgtX = protag.transform.position.x;
+			tgtZ = protag.transform.position.z;
+			target = new Vector3 (tgtX, transform.position.y, tgtZ);
+			relapse = Time.time;
+		} else if (!idle && (Time.time - relapse) > 2f) {
+			idle = true;
+		} else if (!idle) {
+			tgtX = protag.transform.position.x;
+			tgtZ = protag.transform.position.z;
+			target = new Vector3 (tgtX, transform.position.y, tgtZ);
 		}
 		transform.rotation = Quaternion.Euler (90, transform.rotation.y, transform.rotation.z);
 	}
