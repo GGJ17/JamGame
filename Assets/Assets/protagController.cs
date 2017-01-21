@@ -8,14 +8,20 @@ public class protagController : MonoBehaviour {
 
 	float speed = 10f;
 	float yPos = 1.24f;
+	int health = 1;
 	public GameObject camera;
+	public GameObject echo;
 	public GameObject light;
-
-	//bool isBallPlaying = false;
+	public GameObject prey;
+	Light echoLight;
+	float delay;
 
 	// Use this for initialization
 	void Start () {
 		Debug.Log ("test");
+		echoLight = echo.GetComponent<Light>();
+		delay = Time.time;
+		//Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Player"), LayerMask.NameToLayer("Prey"));
 	}
 
 	// Update is called once per frame
@@ -71,6 +77,57 @@ public class protagController : MonoBehaviour {
 			light.transform.position = new Vector3(transform.position.x, camera.transform.position.y, transform.position.z);
 
 		}
+
+		if (Input.GetKey(KeyCode.W)){
 			
+			if ((Time.time - delay) > 0.25f) {
+				Debug.Log(Time.time);
+				delay = Time.time;
+				echo.transform.rotation = Quaternion.Euler (transform.rotation.x, 0, transform.rotation.z);
+				echoLight.enabled = !echoLight.enabled;
+			}
+		}
+
+		if (Input.GetKey(KeyCode.D)){
+
+			if ((Time.time - delay) > 0.25f) {
+				Debug.Log(Time.time);
+				delay = Time.time;
+				echo.transform.rotation = Quaternion.Euler (transform.rotation.x, 90, transform.rotation.z);
+				echoLight.enabled = !echoLight.enabled;
+			}
+		}
+
+		if (Input.GetKey(KeyCode.S)){
+
+			if ((Time.time - delay) > 0.25f) {
+				Debug.Log(Time.time);
+				delay = Time.time;
+				echo.transform.rotation = Quaternion.Euler (transform.rotation.x, 180, transform.rotation.z);
+				echoLight.enabled = !echoLight.enabled;
+			}
+		}
+
+		if (Input.GetKey(KeyCode.A)){
+
+			if ((Time.time - delay) > 0.25f) {
+				Debug.Log(Time.time);
+				delay = Time.time;
+				echo.transform.rotation = Quaternion.Euler (transform.rotation.x, 270, transform.rotation.z);
+				echoLight.enabled = !echoLight.enabled;
+			}
+		}
+
+		echo.transform.position = new Vector3(transform.position.x-0.05f, echo.transform.position.y, transform.position.z-2f);
+			
+	}
+
+	void OnTriggerEnter(Collider other) {
+		Debug.Log(other.gameObject.name);
+		if (other.gameObject.tag == "Prey") {
+			Debug.Log("hit");
+			health++;
+			Destroy (other.gameObject);
+		}
 	}
 }
