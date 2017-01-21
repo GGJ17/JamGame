@@ -8,14 +8,17 @@ public class protagController : MonoBehaviour {
 
 	float speed = 10f;
 	float yPos = 1.24f;
+	int health = 1;
 	public GameObject camera;
 	public GameObject light;
+	public GameObject prey;
 
 	//bool isBallPlaying = false;
 
 	// Use this for initialization
 	void Start () {
 		Debug.Log ("test");
+		Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Player"), LayerMask.NameToLayer("Prey"));
 	}
 
 	// Update is called once per frame
@@ -72,5 +75,12 @@ public class protagController : MonoBehaviour {
 
 		}
 			
+	}
+
+	void OnTriggerEnter(Collider other) {
+		if (other.gameObject.tag == "Prey") {
+			health++;
+			Destroy (other.gameObject);
+		}
 	}
 }
