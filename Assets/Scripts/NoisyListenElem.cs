@@ -9,26 +9,27 @@ public class NoisyListenElem : RaytraceSource {
 		Obstacle = 2,
 		Unknown = 3,
 		Enemy = 4,
-		UniqueEnemy1 = 5,
-		UniqueEnemy2 = 6,
-		UniqueEnemy3 = 7,
+		Prey = 5,
+		UniqueEnemy1 = 6,
+		UniqueEnemy2 = 7,
+		UniqueEnemy3 = 8,
 	}
 	private const float deltaScale = 1.2f;
 	public float rotDelta = 10;//(360*deltaScale) / (rayRes);
 	public float noiseLevel = 100;
 	public float detectLevel = 50;//detect noise louder than .
+	public float knownLevel = 75;
 	public NoiseEnum stype = NoiseEnum.Enemy;
 	private DeciferNoise dn;
 
-	protected void Awake(){
+	new protected void Awake(){
+		Debug.Log ("kaljsdahsfpihsdai");
 		base.Awake();
+		Debug.Log ("kaljsdlkjfliahsfpihsdai");
 		dn = Object.FindObjectOfType<DeciferNoise> ();
-		if (dn == null) {
-			Debug.Log ("NULLLLLLL");
-		}
 	}
 	void Start () {
-		
+		Debug.Log ("kaljsdlkjfliahsfpihsdai2");
 	}
 	
 	// Update is called once per frame
@@ -97,7 +98,7 @@ public class NoisyListenElem : RaytraceSource {
 		if (dn == null) {
 			Debug.Log ("NULLLLLLL");
 		}
-		float intensity = dist*dn.detectObjStr (name, out ne);
+		float intensity = 10*dist*dn.detectObjStr (name, out ne)/count;
 		object[] tmp =  {ang , intensity, (int)ne, name };
 		return tmp;
 	}

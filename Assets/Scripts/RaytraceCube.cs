@@ -11,7 +11,7 @@ public class RaytraceCube : NoisyListenElem {
 	void Start () {
 		//base.Start ();
 	}
-	protected void Awake(){
+	new protected void Awake(){
 		base.Awake ();
 		noiseLevel = 100;
 		detectLevel = 50;
@@ -26,9 +26,6 @@ public class RaytraceCube : NoisyListenElem {
 		foreach (object[] en in info) {
 			tmp += "(s:"+en[3]+",t:"+en[2]+",i:"+en[1]+",a:"+en[0]+"),";
 			Transform goTransform = this.GetComponent<Transform>();
-			float x = -Mathf.Cos (Mathf.Deg2Rad * (float)en [0]) * 30;
-			float y = 0;
-			float z = Mathf.Sin (Mathf.Deg2Rad * (float)en [0]) * 30;
 			//Vector3 dir = (new Vector3 (x,y,z));
 			Vector3 dir = 2*(float)en[1]*(Quaternion.Euler (0, (float)en[0], 0) * goTransform.forward);
 			Debug.DrawRay(goTransform.position,dir, Color.magenta); 

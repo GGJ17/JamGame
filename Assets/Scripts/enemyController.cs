@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using UnityEngine;
 
-public class enemyController : MonoBehaviour {
+public class enemyController : NoisyListenElem {
 
 	public GameObject protag;
 	public GameObject Astar;

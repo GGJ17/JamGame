@@ -8,7 +8,7 @@ public class RaytraceSource : MonoBehaviour {
 
 	//the number of reflections  
 	//public int nReflections = 2;
-	public float rayDist = 10f;
+	public float rayDist = 20f;
 	public int rayRes = 60;
 	// Use this for initialization
 	void Start () {
@@ -30,6 +30,7 @@ public class RaytraceSource : MonoBehaviour {
 			List<ArrayList> al1;
 			float yRot = (i * 360) / (rayRes);
 			Vector3 dir = Quaternion.Euler (0, yRot, 0) * goTransform.forward;
+			dir.y = 0;
 			CalcRay(goTransform.position,dir,rainbowRoad(yRot),out al1);
 			foreach(ArrayList a in al1){
 				object[] b = a.ToArray ();
@@ -85,6 +86,7 @@ public class RaytraceSource : MonoBehaviour {
 		while(currDist<rayDist){  
 			if (Physics.Raycast (ray.origin, ray.direction, out hit, rayDist-currDist)) {
 				inDirection = Vector3.Reflect (ray.direction, hit.normal);
+				inDirection.y = 0;
 				Debug.DrawRay (ray.origin, ray.direction * hit.distance, c);  
 				ray = new Ray (hit.point, inDirection);
 				currDist += hit.distance;
