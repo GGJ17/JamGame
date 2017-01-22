@@ -31,6 +31,8 @@ public class protagController : NoisyListenElem {
 		knownLevel = 200;
 		stype = NoiseEnum.Ally;
 		iconInfo = new List<object[]> ();
+		Rigidbody rb = this.GetComponent<Rigidbody> ();
+		rb.freezeRotation = true;
 		//Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Player"), LayerMask.NameToLayer("Prey"));
 		//camera.transform.rotation = Quaternion.Euler (90, camera.transform.rotation.y+90, camera.transform.rotation.z);
 	}
@@ -115,70 +117,61 @@ public class protagController : NoisyListenElem {
 		Rigidbody rb = this.GetComponent<Rigidbody>();
 		rb.velocity = Vector3.zero;
 		rb.angularVelocity = Vector3.zero;
-		transform.position = new Vector3(transform.position.x, yPos, transform.position.z);
+		float yRot = 0;//rotDelta in deg
+		float rotateSpeed = 240;
 		if (Input.GetKey(KeyCode.LeftArrow)){
 			// Get New Position
-			float newXPos = transform.position.x - (Time.deltaTime * speed);
 			Debug.Log("left");
-
-			// Assign position
-			transform.position = new Vector3(newXPos, yPos, transform.position.z);
-			camera.transform.position = new Vector3(transform.position.x, camera.transform.position.y, transform.position.z);
-			light.transform.position = new Vector3(transform.position.x, camera.transform.position.y, transform.position.z);
-
-			// Rotate Player / Camera
-			//transform.rotation = Quaternion.Euler (90, transform.rotation.y-90, transform.rotation.z);
-			//camera.transform.rotation = Quaternion.Euler (90, camera.transform.rotation.y-90, camera.transform.rotation.z);
-
+			//newXPos -= (Time.deltaTime * speed);
+			//yRot -= 60*Time.deltaTime;
+			transform.Rotate(0, -Time.deltaTime*rotateSpeed, 0, Space.Self);
+			camera.transform.Rotate(0, 0, +Time.deltaTime*rotateSpeed, Space.Self);
 		}
-
 		if (Input.GetKey(KeyCode.RightArrow)){
 			// Get New Position
-			float newXPos = transform.position.x + (Time.deltaTime * speed);
+			//newXPos += (Time.deltaTime * speed);
 			Debug.Log("right");
-			
+			//yRot += 60*Time.deltaTime;
+			transform.Rotate(0, +Time.deltaTime*rotateSpeed, 0, Space.Self);
+			camera.transform.Rotate(0, 0, -Time.deltaTime*rotateSpeed, Space.Self);
 			// Assign position
-			transform.position = new Vector3(newXPos, yPos, transform.position.z);
-			camera.transform.position = new Vector3(transform.position.x, camera.transform.position.y, transform.position.z);
-			light.transform.position = new Vector3(transform.position.x, camera.transform.position.y, transform.position.z);
+			//transform.position = new Vector3(newXPos, yPos, transform.position.z);
+			//camera.transform.position = new Vector3(transform.position.x, camera.transform.position.y, transform.position.z);
+			//light.transform.position = new Vector3(transform.position.x, camera.transform.position.y, transform.position.z);
 
 			// Rotate Player / Camera
 			//transform.rotation = Quaternion.Euler (90, transform.rotation.y+90, transform.rotation.z);
 			//camera.transform.rotation = Quaternion.Euler (90, camera.transform.rotation.y+90, camera.transform.rotation.z);
 
 		}
+		Quaternion s = transform.rotation;
+		Quaternion sr = Quaternion.identity;
+		sr.y = s.y;
+		sr.w = s.w;
+		camera.transform.rotation = sr;
+		camera.transform.Rotate (90, 0, 0, Space.Self);
+		//Vector3 nRot = Quaternion.Euler (0, yRot, 0) * transform.forward;
+		//transform.rotation = Quaternion.Euler (transform.rotation.x, transform.rotation.y+yRot, transform.rotation.z);
+		//camera.transform.rotation = Quaternion.Euler (transform.rotation.x+90, transform.rotation.y, transform.rotation.z);
+		//camera.transform.localRotation = Quaternion.Euler (transform.rotation.x+90, transform.rotation.y, transform.rotation.z);
+		//Quaternion.Euler (90, transform.rotation.y+90, transform.rotation.z);
+
+		float movDelt = 0;
 
 		if (Input.GetKey(KeyCode.DownArrow)){
-			// Get New Position
-			float newZPos = transform.position.z - (Time.deltaTime * speed);
+			movDelt -= (Time.deltaTime * speed);
 			Debug.Log("down");
-
-			// Assign position
-			transform.position = new Vector3(transform.position.x, yPos, newZPos);
-			camera.transform.position = new Vector3(transform.position.x, camera.transform.position.y, transform.position.z);
-			light.transform.position = new Vector3(transform.position.x, camera.transform.position.y, transform.position.z);
-
-			// Rotate Player / Camera
-			//transform.rotation = Quaternion.Euler (90, transform.rotation.y+180, transform.rotation.z);
-			//camera.transform.rotation = Quaternion.Euler (90, camera.transform.rotation.y+180, camera.transform.rotation.z);
-
 		}
-
 		if (Input.GetKey(KeyCode.UpArrow)){
-			// Get New Position
-			float newZPos = transform.position.z + (Time.deltaTime * speed);
+			movDelt += (Time.deltaTime * speed);
 			Debug.Log("up");
-
-			// Assign position
-			transform.position = new Vector3(transform.position.x, yPos, newZPos);
-			camera.transform.position = new Vector3(transform.position.x, camera.transform.position.y, transform.position.z);
-			light.transform.position = new Vector3(transform.position.x, camera.transform.position.y, transform.position.z);
-
-
-			// Rotate Player / Camera
-			//transform.rotation = Quaternion.Euler (90, transform.rotation.y, transform.rotation.z);
-			//camera.transform.rotation = Quaternion.Euler (90, camera.transform.rotation.y, camera.transform.rotation.z);
 		}
+		Vector3 dpos = movDelt * transform.forward;
+		dpos.y = 0;
+		transform.position = transform.position + dpos;
+		camera.transform.position = new Vector3(transform.position.x, camera.transform.position.y, transform.position.z);
+		light.transform.position = new Vector3(transform.position.x, camera.transform.position.y, transform.position.z);
+
 
 		if (Input.GetKey(KeyCode.W)){
 			
@@ -221,7 +214,7 @@ public class protagController : NoisyListenElem {
 		}
 
 		echo.transform.position = new Vector3(transform.position.x-0.05f, echo.transform.position.y, transform.position.z-2f);
-		transform.rotation = Quaternion.Euler (0, 0, 0);
+		//transform.rotation = Quaternion.Euler (0, 0, 0);
 		//camera.transform.rotation = Quaternion.Euler (00, 0, 0);
 	}
 
