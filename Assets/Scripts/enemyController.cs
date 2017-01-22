@@ -38,9 +38,12 @@ public class enemyController : NoisyListenElem {
 
 	// Update is called once per frame
 	void Update () {
-		if (Mathf.Abs(protag.transform.position.x - transform.position.x) < 0.75f && Mathf.Abs(protag.transform.position.z - transform.position.z) < 0.75f) {
-			SceneManager.LoadScene ("GameOver");
-		}
+		Pathfinding pathfinder = Astar.GetComponent<Pathfinding> ();
+		List<Node> path = pathfinder.GetPath ();
+		List<Node> pathBack = pathfinder.GetPathBack ();
+		//if (path.Count <= 0 && Mathf.Abs(protag.transform.position.x - transform.position.x) < 1f && Mathf.Abs(protag.transform.position.z - transform.position.z) < 1f) {
+		//	SceneManager.LoadScene ("GameOver");
+		//}
 		if (idle==0 && Mathf.Abs (target.x - transform.position.x) < 0.01f && Mathf.Abs (target.z - transform.position.z) < 0.01f) {
 			tgtX = Random.Range (xMin, xMax);
 			tgtZ = Random.Range (zMin, zMax);
@@ -53,12 +56,9 @@ public class enemyController : NoisyListenElem {
 			transform.Rotate (speedRot * Time.deltaTime);
 			transform.position = Vector3.MoveTowards (transform.position, target, speed * Time.deltaTime);
 		}
-		Pathfinding pathfinder = Astar.GetComponent<Pathfinding> ();
-		List<Node> path = pathfinder.GetPath ();
-		List<Node> pathBack = pathfinder.GetPathBack ();
-		if (path.Count <= 0) {
-			SceneManager.LoadScene ("GameOver");
-		}
+		//if (path.Count <= 0) {
+		//	SceneManager.LoadScene ("GameOver");
+		//}
 
 		// Detects Player *** change logic ***
 		if (!isDead && Mathf.Abs (protag.transform.position.x - transform.position.x) < 2f && Mathf.Abs (protag.transform.position.z - transform.position.z) < 2f) {
@@ -103,8 +103,9 @@ public class enemyController : NoisyListenElem {
 		Debug.Log(other.gameObject.name);
 		if (other.gameObject.tag == "Player") {
 			Debug.Log("dead");
-			Destroy (other.gameObject);
-			isDead = true;
+			SceneManager.LoadScene ("GameOver");
+			//Destroy (other.gameObject);
+			//isDead = true;
 		}
 	}
 }
