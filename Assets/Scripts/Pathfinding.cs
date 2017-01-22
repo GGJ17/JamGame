@@ -85,10 +85,10 @@ public class Pathfinding : MonoBehaviour {
 
 		if (!backward) {
 			path = nuPath;
-			//grid.path = path;
+			grid.path = path;
 		} else {
 			pathBack = nuPath;
-			grid.path = nuPath;
+			//grid.path = nuPath;
 		}
 
 	}

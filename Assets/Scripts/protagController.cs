@@ -8,11 +8,11 @@ public class protagController : NoisyListenElem {
 
 	public float speed = 5f;
 	float yPos = 1.27f;
-	int health = 1;
+	int preyEaten = 0;
 	public GameObject camera;
+	public int totalPrey;
 	public GameObject echo;
 	public GameObject light;
-	public GameObject prey;
 	public GameObject firefly;
 	Light echoLight;
 	float delay;
@@ -66,6 +66,9 @@ public class protagController : NoisyListenElem {
 		DetectSound();
 		HandleInput();
 		HandleIcon ();
+		if (preyEaten >= totalPrey) {
+			SceneManager.LoadScene (SceneManager.GetActiveScene().buildIndex+1);
+		}
 	}
 	void HandleIcon(){
 		//clear all
@@ -288,7 +291,7 @@ public class protagController : NoisyListenElem {
 		Debug.Log(other.gameObject.name);
 		if (other.gameObject.tag == "Prey") {
 			Debug.Log("hit");
-			health++;
+			preyEaten++;
 			Destroy (other.gameObject);
 		}
 	}
