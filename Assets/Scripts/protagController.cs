@@ -16,11 +16,14 @@ public class protagController : MonoBehaviour {
 	Light echoLight;
 	float delay;
 
+	private Animator animator;
+
 	// Use this for initialization
 	void Start () {
 		Debug.Log ("test");
 		echoLight = echo.GetComponent<Light>();
 		delay = Time.time;
+		animator = this.GetComponent<Animator> ();
 		//Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Player"), LayerMask.NameToLayer("Prey"));
 	}
 
@@ -34,7 +37,7 @@ public class protagController : MonoBehaviour {
 			// Get New Position
 			float newXPos = transform.position.x - (Time.deltaTime * speed);
 			Debug.Log("left");
-
+			animator.SetBool ("isWalking", true);
 			// Assign position
 			transform.position = new Vector3(newXPos, yPos, transform.position.z);
 			camera.transform.position = new Vector3(transform.position.x, camera.transform.position.y, transform.position.z);
@@ -46,11 +49,14 @@ public class protagController : MonoBehaviour {
 
 		}
 
+		if (Input.GetKeyUp("left"))
+			animator.SetBool ("isWalking", false);
+
 		if (Input.GetKey(KeyCode.RightArrow)){
 			// Get New Position
 			float newXPos = transform.position.x + (Time.deltaTime * speed);
 			Debug.Log("right");
-			
+			animator.SetBool ("isWalking", true);
 			// Assign position
 			transform.position = new Vector3(newXPos, yPos, transform.position.z);
 			camera.transform.position = new Vector3(transform.position.x, camera.transform.position.y, transform.position.z);
@@ -62,11 +68,14 @@ public class protagController : MonoBehaviour {
 
 		}
 
+		if (Input.GetKeyUp("right"))
+			animator.SetBool ("isWalking", false);
+
 		if (Input.GetKey(KeyCode.DownArrow)){
 			// Get New Position
 			float newZPos = transform.position.z - (Time.deltaTime * speed);
 			Debug.Log("down");
-
+			animator.SetBool ("isWalking", true);
 			// Assign position
 			transform.position = new Vector3(transform.position.x, yPos, newZPos);
 			camera.transform.position = new Vector3(transform.position.x, camera.transform.position.y, transform.position.z);
@@ -78,11 +87,14 @@ public class protagController : MonoBehaviour {
 
 		}
 
+		if (Input.GetKeyUp("down"))
+			animator.SetBool ("isWalking", false);
+
 		if (Input.GetKey(KeyCode.UpArrow)){
 			// Get New Position
 			float newZPos = transform.position.z + (Time.deltaTime * speed);
 			Debug.Log("up");
-
+			animator.SetBool ("isWalking", true);
 			// Assign position
 			transform.position = new Vector3(transform.position.x, yPos, newZPos);
 			camera.transform.position = new Vector3(transform.position.x, camera.transform.position.y, transform.position.z);
@@ -93,6 +105,9 @@ public class protagController : MonoBehaviour {
 			//transform.rotation = Quaternion.Euler (90, transform.rotation.y, transform.rotation.z);
 			//camera.transform.rotation = Quaternion.Euler (90, camera.transform.rotation.y, camera.transform.rotation.z);
 		}
+
+		if (Input.GetKeyUp("up"))
+			animator.SetBool ("isWalking", false);
 
 		if (Input.GetKey(KeyCode.W)){
 			
