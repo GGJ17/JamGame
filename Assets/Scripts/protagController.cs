@@ -13,11 +13,12 @@ public class protagController : NoisyListenElem {
 	public GameObject echo;
 	public GameObject light;
 	public GameObject prey;
+	public GameObject firefly;
 	Light echoLight;
 	float delay;
-
+	private Light aoeEcho;
 	private Animator animator;
-
+	private int lastAoe=0;
 	protected List<object[]> iconInfo;
 	private rotateIcon[] ris;
 	// Use this for initialization
@@ -37,6 +38,8 @@ public class protagController : NoisyListenElem {
 		iconInfo = new List<object[]> ();
 		Rigidbody rb = this.GetComponent<Rigidbody> ();
 		rb.freezeRotation = true;
+		aoeEcho = firefly.GetComponent<Light> ();
+		aoeEcho.enabled = false;
 		//Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Player"), LayerMask.NameToLayer("Prey"));
 		//camera.transform.rotation = Quaternion.Euler (90, camera.transform.rotation.y+90, camera.transform.rotation.z);
 	}
@@ -71,15 +74,31 @@ public class protagController : NoisyListenElem {
 				Debug.Log ("NULLLLLLLLLLLLLLLLLLLLLLLl");
 				//return;
 			}
+			rotateIcon cur;
 			if ((NoiseEnum)onlyIcon [2] != NoiseEnum.Unknown) {
-				ie.angle = (float)onlyIcon [0];
-				ie.intensity = (float)onlyIcon [1];
-				ie.active = true;
+				cur = ie;
 			} else {
+				cur = iq;
 				iq.angle = (float)onlyIcon [0];
 				iq.intensity = (float)onlyIcon [1];
 				iq.active = true;
 			}
+			float inten = (float)onlyIcon [1];
+			float nAlpha = 0;
+			if (inten >= 1.5f*knownLevel) {
+				nAlpha = 1f;
+			} else {
+				nAlpha = (inten-detectLevel)/(1.5f*knownLevel-detectLevel);
+			}
+			Debug.Log ("Alpha is: "+nAlpha);
+			cur.angle = (float)onlyIcon [0];
+			cur.intensity = inten;
+			Image im = cur.GetComponent<Image>();
+			//im.color.a = nAlpha;
+			Color c = im.color;
+			im.color = new Color(c.r,c.g,c.b,nAlpha);
+			cur.active = true;
+
 		}
 
 	}
@@ -189,7 +208,7 @@ public class protagController : NoisyListenElem {
 		transform.position = transform.position + dpos;
 		camera.transform.position = new Vector3(transform.position.x, camera.transform.position.y, transform.position.z);
 		light.transform.position = new Vector3(transform.position.x, camera.transform.position.y, transform.position.z);
-
+		firefly.transform.position = transform.position;
 
 
 		if (Input.GetKey(KeyCode.W)){
@@ -230,6 +249,16 @@ public class protagController : NoisyListenElem {
 				echo.transform.rotation = Quaternion.Euler (transform.rotation.x, 270, transform.rotation.z);
 				echoLight.enabled = !echoLight.enabled;
 			}
+		}
+
+		if (Input.GetKey (KeyCode.E)) {
+			if (Time.time - delay > 3f) {
+				aoeEcho.enabled = true;
+				delay = Time.time;
+			}
+		}
+		if (Time.time - delay > 0.1f) {
+			aoeEcho.enabled = false;
 		}
 
 		echo.transform.position = new Vector3(transform.position.x-0.05f, echo.transform.position.y, transform.position.z-2f);
