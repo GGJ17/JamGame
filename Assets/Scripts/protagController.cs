@@ -108,7 +108,6 @@ public class protagController : NoisyListenElem {
 			} else {
 				nAlpha = (inten-detectLevel)/(1.5f*knownLevel-detectLevel);
 			}
-			Debug.Log ("Alpha is: "+nAlpha);
 			cur.angle = (float)ii [0];
 			cur.intensity = inten;
 			Image im = cur.GetComponent<Image>();
@@ -292,6 +291,8 @@ public class protagController : NoisyListenElem {
 		if (other.gameObject.tag == "Prey") {
 			Debug.Log("hit");
 			preyEaten++;
+			Text t =GameObject.FindObjectOfType<Text> ();
+			t.text = preyEaten+" / "+totalPrey+" Prey";
 			//Destroy (other.gameObject);
 			other.GetComponent<SpriteRenderer>().enabled=false;
 			other.enabled = false;

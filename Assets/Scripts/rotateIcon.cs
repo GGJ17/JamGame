@@ -23,7 +23,6 @@ public class rotateIcon : MonoBehaviour {
 		im.enabled = active;
 		float newX = Mathf.Sin (Mathf.Deg2Rad*angle) * 80f;
 		float newY = Mathf.Cos (Mathf.Deg2Rad*angle) * 80f;
-		Debug.Log ("ICON:"+angle+","+intensity+" "+newX+","+newY);
 
 		rt.localPosition = new Vector3 (newX,newY,0);
 		/*
