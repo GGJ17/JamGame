@@ -4,23 +4,29 @@ using System.Collections.Generic;
 
 public class Pathfinding : MonoBehaviour {
 
-	public Transform seeker, target;
+	public Transform seeker, target, returnTarget;
 	Grid grid;
 	public List<Node> path = new List<Node> ();
+	public List<Node> pathBack = new List<Node> ();
 
 	void Awake() {
 		grid = GetComponent<Grid> ();
 	}
 
 	void Update() {
-		FindPath (seeker.position, target.position);
+		FindPath (seeker.position, target.position,false);
+		FindPath (seeker.position, returnTarget.position,true);
 	}
 
 	public List<Node> GetPath(){
 		return path;
 	}
 
-	void FindPath(Vector3 startPos, Vector3 targetPos) {
+	public List<Node> GetPathBack(){
+		return pathBack;
+	}
+
+	void FindPath(Vector3 startPos, Vector3 targetPos,bool backward) {
 		Node startNode = grid.NodeFromWorldPoint(startPos);
 		Node targetNode = grid.NodeFromWorldPoint(targetPos);
 
@@ -41,7 +47,11 @@ public class Pathfinding : MonoBehaviour {
 			closedSet.Add(node);
 
 			if (node == targetNode) {
-				RetracePath(startNode,targetNode);
+				if (!backward) {
+					RetracePath (startNode, targetNode, false);
+				} else {
+					RetracePath (startNode, targetNode, true);
+				}
 				return;
 			}
 
@@ -63,17 +73,23 @@ public class Pathfinding : MonoBehaviour {
 		}
 	}
 
-	void RetracePath(Node startNode, Node endNode) {
-		path = new List<Node>();
+	void RetracePath(Node startNode, Node endNode,bool backward) {
+		List<Node> nuPath = new List<Node>();
 		Node currentNode = endNode;
 
 		while (currentNode != startNode) {
-			path.Add(currentNode);
+			nuPath.Add(currentNode);
 			currentNode = currentNode.parent;
 		}
-		path.Reverse();
+		nuPath.Reverse();
 
-		grid.path = path;
+		if (!backward) {
+			path = nuPath;
+			//grid.path = path;
+		} else {
+			pathBack = nuPath;
+			grid.path = nuPath;
+		}
 
 	}
 
