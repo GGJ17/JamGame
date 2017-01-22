@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class protagController : NoisyListenElem {
 
-	float speed = 10f;
+	public float speed = 5f;
 	float yPos = 1.27f;
 	int health = 1;
 	public GameObject camera;
@@ -21,6 +21,10 @@ public class protagController : NoisyListenElem {
 	private int lastAoe=0;
 	protected List<object[]> iconInfo;
 	private rotateIcon[] ris;
+	private List<rotateIcon> iconQs; 
+	private List<rotateIcon> iconEs;
+	private List<rotateIcon> iconPs;
+	private int riCapQ=0, riCapE=0, riCapP=0;
 	// Use this for initialization
 	protected void Awake(){
 		base.Awake ();
@@ -42,6 +46,19 @@ public class protagController : NoisyListenElem {
 		aoeEcho.enabled = false;
 		//Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Player"), LayerMask.NameToLayer("Prey"));
 		//camera.transform.rotation = Quaternion.Euler (90, camera.transform.rotation.y+90, camera.transform.rotation.z);
+		iconEs = new List<rotateIcon>(ris.Length/4);
+		iconQs = new List<rotateIcon>(ris.Length/4);
+		iconPs = new List<rotateIcon>(ris.Length/4);
+		foreach (rotateIcon ri in ris) {//init icons
+			ri.active = false;
+			if (ri.name.StartsWith("ImageE")) {
+				iconEs.Add(ri);
+			}else if(ri.name.StartsWith("ImageQ")){
+				iconQs.Add(ri);
+			}else if(ri.name.StartsWith("ImageP")){
+				iconPs.Add(ri);
+			}
+		}
 	}
 
 	// Update is called once per frame
@@ -51,39 +68,37 @@ public class protagController : NoisyListenElem {
 		HandleIcon ();
 	}
 	void HandleIcon(){
-		rotateIcon iq = null;
-		rotateIcon ie = null;
-		foreach (rotateIcon ri in ris) {
-			ri.active = false;
-			if (ri.name == "ImageE") {
-				ie = ri;
-			}else if(ri.name == "ImageQ"){
-				iq = ri;
-			}
-		}
-		if (iconInfo.Count > 0) {
-			object[] onlyIcon = iconInfo [0];
-			foreach (object[] ii in iconInfo) {
-				if ((float)ii [1] > (float)onlyIcon [1]) {
-					onlyIcon = ii;
-				}
-			}
-
+		//clear all
+		foreach (rotateIcon ri in ris) {ri.active = false;}
+		int riCapEn=0,riCapQn=0,riCapPn=0;
+		foreach (object[] ii in iconInfo) {
 			//angle,intensity,type,name
-			if (ie == null || iq == null || onlyIcon == null) {
-				Debug.Log ("NULLLLLLLLLLLLLLLLLLLLLLLl");
-				//return;
-			}
 			rotateIcon cur;
-			if ((NoiseEnum)onlyIcon [2] != NoiseEnum.Unknown) {
-				cur = ie;
+			if ((NoiseEnum)ii [2] == NoiseEnum.Unknown) {
+				if (riCapQn < iconQs.Count) {
+					cur = iconQs [riCapQn];
+					riCapQn += 1;
+				} else {
+					continue;
+				}
+			} else if((NoiseEnum)ii [2] == NoiseEnum.Enemy){
+				if (riCapEn < iconEs.Count) {
+					cur = iconEs [riCapEn];
+					riCapEn += 1;
+				} else {
+					continue;
+				}
+			} else if((NoiseEnum)ii [2] == NoiseEnum.Prey){
+				if (riCapPn < iconPs.Count) {
+					cur = iconPs [riCapPn];
+					riCapPn += 1;
+				} else {
+					continue;
+				}
 			} else {
-				cur = iq;
-				iq.angle = (float)onlyIcon [0];
-				iq.intensity = (float)onlyIcon [1];
-				iq.active = true;
+				continue;
 			}
-			float inten = (float)onlyIcon [1];
+			float inten = (float)ii [1];
 			float nAlpha = 0;
 			if (inten >= 1.5f*knownLevel) {
 				nAlpha = 1f;
@@ -91,16 +106,17 @@ public class protagController : NoisyListenElem {
 				nAlpha = (inten-detectLevel)/(1.5f*knownLevel-detectLevel);
 			}
 			Debug.Log ("Alpha is: "+nAlpha);
-			cur.angle = (float)onlyIcon [0];
+			cur.angle = (float)ii [0];
 			cur.intensity = inten;
 			Image im = cur.GetComponent<Image>();
 			//im.color.a = nAlpha;
 			Color c = im.color;
 			im.color = new Color(c.r,c.g,c.b,nAlpha);
 			cur.active = true;
-
 		}
-
+		riCapP = riCapPn;
+		riCapE = riCapEn;
+		riCapQ = riCapQn;
 	}
 	void DetectSound(){
 		Dictionary<string,List<float[]>> d = CalcRay();
