@@ -173,7 +173,7 @@ public class protagController : NoisyListenElem {
 			animator.SetBool ("isWalking", true);
 		}
 
-		if (Input.GetKeyUp("down"))
+		if (Input.GetKeyUp("down")){
 			animator.SetBool ("isWalking", false);
 
 		}
