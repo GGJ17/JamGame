@@ -5,6 +5,7 @@ using UnityEngine;
 public class enemyController : MonoBehaviour {
 
 	public GameObject protag;
+	public GameObject Astar;
 	public float xMin;
 	public float xMax;
 	public float zMin;
@@ -40,19 +41,28 @@ public class enemyController : MonoBehaviour {
 			transform.Rotate (speedRot * Time.deltaTime);
 			transform.position = Vector3.MoveTowards (transform.position, target, speed * Time.deltaTime);
 		}
+		Pathfinding pathfinder = Astar.GetComponent<Pathfinding> ();
+		List<Node> path = pathfinder.GetPath ();
 		if (Mathf.Abs (protag.transform.position.x - transform.position.x) < 2f && Mathf.Abs (protag.transform.position.z - transform.position.z) < 2f) {
 			idle = false;
-			tgtX = protag.transform.position.x;
-			tgtZ = protag.transform.position.z;
+			tgtX = path [0].worldPosition.x;
+			tgtZ = path [0].worldPosition.z;
 			target = new Vector3 (tgtX, transform.position.y, tgtZ);
 			relapse = Time.time;
 		} else if (!idle && (Time.time - relapse) > 2f) {
 			idle = true;
+			tgtX = Random.Range (xMin, xMax);
+			tgtZ = Random.Range (zMin, zMax);
+			target = new Vector3 (tgtX, transform.position.y, tgtZ);
 		} else if (!idle) {
-			tgtX = protag.transform.position.x;
-			tgtZ = protag.transform.position.z;
+			tgtX = path [0].worldPosition.x;
+			tgtZ = path [0].worldPosition.z;
 			target = new Vector3 (tgtX, transform.position.y, tgtZ);
 		}
 		transform.rotation = Quaternion.Euler (90, transform.rotation.y, transform.rotation.z);
+		Debug.Log ("X!");
+		Debug.Log (path [0].worldPosition.x);
+		Debug.Log ("Z!");
+		Debug.Log (path [0].worldPosition.z);
 	}
 }
