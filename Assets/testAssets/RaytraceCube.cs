@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RaytraceCube : RaytraceSource {
+public class RaytraceCube : NoisyListenElem {
 
 	float speed = 10f;
 	float rotateSpeed = 30f;
@@ -11,19 +11,35 @@ public class RaytraceCube : RaytraceSource {
 	void Start () {
 		//base.Start ();
 	}
-	
+	protected void Awake(){
+		base.Awake ();
+		noiseLevel = 100;
+		detectLevel = 50;
+		stype = NoiseEnum.Ally;
+	}
 	// Update is called once per frame
 	void Update () {
 		//base.Update();
 		Dictionary<string,List<float[]>> d = CalcRay();
+		List<object[]> info = filterNoisyObj(d);
 		string tmp = "";
-		foreach(KeyValuePair<string,List<float[]>> entry in d){
-			tmp += entry.Key + ": ";
-			foreach(float[] dr in entry.Value){
-				tmp += dr[0]+"/"+dr[1]+",";
-			}
-			tmp+="; ";
+		foreach (object[] en in info) {
+			tmp += "(s:"+en[3]+",t:"+en[2]+",i:"+en[1]+",a:"+en[0]+"),";
+			Transform goTransform = this.GetComponent<Transform>();
+			float x = -Mathf.Cos (Mathf.Deg2Rad * (float)en [0]) * 30;
+			float y = 0;
+			float z = Mathf.Sin (Mathf.Deg2Rad * (float)en [0]) * 30;
+			//Vector3 dir = (new Vector3 (x,y,z));
+			Vector3 dir = 2*(float)en[1]*(Quaternion.Euler (0, (float)en[0], 0) * goTransform.forward);
+			Debug.DrawRay(goTransform.position,dir, Color.magenta); 
 		}
+//		foreach(KeyValuePair<string,List<float[]>> entry in d){
+//			tmp += entry.Key + ": ";
+//			foreach(float[] dr in entry.Value){
+//				tmp += dr[0]+"/"+dr[1]+",";
+//			}
+//			tmp+="; ";
+//		}
 		Debug.Log ("D: "+tmp);
 		HandleInput();
 	}
