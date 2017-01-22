@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class enemyController : MonoBehaviour {
+public class enemyController : NoisyListenElem {
 
 	public GameObject protag;
 	public GameObject Astar;
@@ -62,9 +62,9 @@ public class enemyController : MonoBehaviour {
 			target = new Vector3 (tgtX, transform.position.y, tgtZ);
 		}
 		transform.rotation = Quaternion.Euler (90, transform.rotation.y, transform.rotation.z);
-		Debug.Log ("X!");
-		Debug.Log (path [0].worldPosition.x);
-		Debug.Log ("Z!");
-		Debug.Log (path [0].worldPosition.z);
+//		Debug.Log ("X!");
+//		Debug.Log (path [0].worldPosition.x);
+//		Debug.Log ("Z!");
+//		Debug.Log (path [0].worldPosition.z);
 	}
 }
