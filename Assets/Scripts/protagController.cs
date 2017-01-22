@@ -154,6 +154,8 @@ public class protagController : NoisyListenElem {
 	}
 	void HandleInput(){
 		Rigidbody rb = this.GetComponent<Rigidbody>();
+		Vector3 v = transform.position;
+		transform.position = new Vector3 (v.x,1.27f,v.z);
 		rb.velocity = Vector3.zero;
 		rb.angularVelocity = Vector3.zero;
 		float yRot = 0;//rotDelta in deg
