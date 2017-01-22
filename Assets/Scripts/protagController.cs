@@ -293,7 +293,8 @@ public class protagController : NoisyListenElem {
 			Debug.Log("hit");
 			preyEaten++;
 			//Destroy (other.gameObject);
-			other.enabled=false;
+			other.GetComponent<SpriteRenderer>().enabled=false;
+			other.enabled = false;
 		}
 	}
 }
