@@ -15,6 +15,9 @@ public class protagController : NoisyListenElem {
 	public GameObject prey;
 	Light echoLight;
 	float delay;
+
+	private Animator animator;
+
 	protected List<object[]> iconInfo;
 	private rotateIcon[] ris;
 	// Use this for initialization
@@ -26,6 +29,7 @@ public class protagController : NoisyListenElem {
 		Debug.Log ("test");
 		echoLight = echo.GetComponent<Light>();
 		delay = Time.time;
+		animator = this.GetComponent<Animator> ();
 		noiseLevel = 100;
 		detectLevel = 120;
 		knownLevel = 200;
@@ -122,6 +126,7 @@ public class protagController : NoisyListenElem {
 		if (Input.GetKey(KeyCode.LeftArrow)){
 			// Get New Position
 			Debug.Log("left");
+			animator.SetBool ("isWalking", true);
 			//newXPos -= (Time.deltaTime * speed);
 			//yRot -= 60*Time.deltaTime;
 			transform.Rotate(0, -Time.deltaTime*rotateSpeed, 0, Space.Self);
@@ -131,6 +136,7 @@ public class protagController : NoisyListenElem {
 			// Get New Position
 			//newXPos += (Time.deltaTime * speed);
 			Debug.Log("right");
+			animator.SetBool ("isWalking", true);
 			//yRot += 60*Time.deltaTime;
 			transform.Rotate(0, +Time.deltaTime*rotateSpeed, 0, Space.Self);
 			camera.transform.Rotate(0, 0, -Time.deltaTime*rotateSpeed, Space.Self);
@@ -158,19 +164,32 @@ public class protagController : NoisyListenElem {
 
 		float movDelt = 0;
 
+		if (Input.GetKeyUp("right"))
+			animator.SetBool ("isWalking", false);
+
 		if (Input.GetKey(KeyCode.DownArrow)){
 			movDelt -= (Time.deltaTime * speed);
 			Debug.Log("down");
+			animator.SetBool ("isWalking", true);
+		}
+
+		if (Input.GetKeyUp("down"))
+			animator.SetBool ("isWalking", false);
+
 		}
 		if (Input.GetKey(KeyCode.UpArrow)){
 			movDelt += (Time.deltaTime * speed);
 			Debug.Log("up");
+			animator.SetBool ("isWalking", true);
 		}
+		if (Input.GetKeyUp("up"))
+			animator.SetBool ("isWalking", false);
 		Vector3 dpos = movDelt * transform.forward;
 		dpos.y = 0;
 		transform.position = transform.position + dpos;
 		camera.transform.position = new Vector3(transform.position.x, camera.transform.position.y, transform.position.z);
 		light.transform.position = new Vector3(transform.position.x, camera.transform.position.y, transform.position.z);
+
 
 
 		if (Input.GetKey(KeyCode.W)){
