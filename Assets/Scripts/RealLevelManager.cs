@@ -59,7 +59,12 @@ using UnityEngine.Audio;
 
 		public IEnumerator StartGame(float delay) {
 			yield return new WaitForSeconds(delay);
-			SceneManager.LoadScene("level1");
+			//SceneManager.LoadScene("level1");
+			if (SceneManager.GetActiveScene().name == "GameOver") {
+				SceneManager.LoadScene ("Scenes/testScene");
+			} else {
+				SceneManager.LoadScene (SceneManager.GetActiveScene ().buildIndex + 1);
+				}
 		}
 		
 		public void QuitLevel()	{
