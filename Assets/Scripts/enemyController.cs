@@ -35,13 +35,11 @@ public class enemyController : NoisyListenElem {
 			aSources [i].mute = true;
 		}
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
-		if (isDead) {
-			if (Input.GetKeyDown (KeyCode.Space)) {
-				SceneManager.LoadScene (SceneManager.GetActiveScene ().name);
-			}
+		if (Mathf.Abs(protag.transform.position.x - transform.position.x) < 0.75f && Mathf.Abs(protag.transform.position.z - transform.position.z) < 0.75f) {
+			SceneManager.LoadScene ("GameOver");
 		}
 		if (idle==0 && Mathf.Abs (target.x - transform.position.x) < 0.01f && Mathf.Abs (target.z - transform.position.z) < 0.01f) {
 			tgtX = Random.Range (xMin, xMax);
@@ -58,6 +56,9 @@ public class enemyController : NoisyListenElem {
 		Pathfinding pathfinder = Astar.GetComponent<Pathfinding> ();
 		List<Node> path = pathfinder.GetPath ();
 		List<Node> pathBack = pathfinder.GetPathBack ();
+		if (path.Count <= 0) {
+			SceneManager.LoadScene ("GameOver");
+		}
 
 		// Detects Player *** change logic ***
 		if (!isDead && Mathf.Abs (protag.transform.position.x - transform.position.x) < 2f && Mathf.Abs (protag.transform.position.z - transform.position.z) < 2f) {

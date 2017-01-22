@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.SceneManagement;
 using UnityEngine.Audio;
+using UnityEditor.SceneManagement;
 
 	public class RealLevelManager : MonoBehaviour {
 
@@ -28,9 +29,9 @@ using UnityEngine.Audio;
 		}
 			
 		public void LoadNext () {
-		if(globalThing.GetComponent<GlobalControl> ().lastLevelBuildIndex == 7 
-				|| globalThing.GetComponent<GlobalControl> ().lastLevelBuildIndex == 13)
-				SceneManager.LoadScene ("Menu");
+		if (globalThing.GetComponent<GlobalControl> ().lastLevelBuildIndex == 7
+		   || globalThing.GetComponent<GlobalControl> ().lastLevelBuildIndex == 13)
+			SceneManager.LoadScene ("Menu");
 			else
 				SceneManager.LoadScene ((globalThing.GetComponent<GlobalControl> ().lastLevelBuildIndex + 1));
 		}
@@ -59,7 +60,11 @@ using UnityEngine.Audio;
 
 		public IEnumerator StartGame(float delay) {
 			yield return new WaitForSeconds(delay);
-			SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex+1);
+		if (SceneManager.GetActiveScene().name == "GameOver") {
+			SceneManager.LoadScene ("Scenes/testScene");
+		} else {
+			SceneManager.LoadScene (SceneManager.GetActiveScene ().buildIndex + 1);
+		}
 		}
 		
 		public void QuitLevel()	{
