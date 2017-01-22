@@ -43,6 +43,8 @@ public class enemyController : MonoBehaviour {
 		}
 		Pathfinding pathfinder = Astar.GetComponent<Pathfinding> ();
 		List<Node> path = pathfinder.GetPath ();
+
+		// Detects Player *** change logic ***
 		if (Mathf.Abs (protag.transform.position.x - transform.position.x) < 2f && Mathf.Abs (protag.transform.position.z - transform.position.z) < 2f) {
 			idle = false;
 			tgtX = path [0].worldPosition.x;

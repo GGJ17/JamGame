@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 public class protagController : MonoBehaviour {
 
 	float speed = 10f;
-	float yPos = 2f;
+	float yPos = 1.27f;
 	int health = 1;
 	public GameObject camera;
 	public GameObject echo;
@@ -135,7 +135,7 @@ public class protagController : MonoBehaviour {
 		}
 
 		echo.transform.position = new Vector3(transform.position.x-0.05f, echo.transform.position.y, transform.position.z-2f);
-		transform.rotation = Quaternion.Euler (90, 90, 0);
+		//transform.rotation = Quaternion.Euler (90, 90, 0);
 			
 	}
 
