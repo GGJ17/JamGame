@@ -292,7 +292,8 @@ public class protagController : NoisyListenElem {
 		if (other.gameObject.tag == "Prey") {
 			Debug.Log("hit");
 			preyEaten++;
-			Destroy (other.gameObject);
+			//Destroy (other.gameObject);
+			other.enabled=false;
 		}
 	}
 }
